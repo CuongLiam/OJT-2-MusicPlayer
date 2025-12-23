@@ -4,10 +4,7 @@ const SignUpModal = () => {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
       {/* Modal Container - Responsive: Desktop 1280x608, Tablet 698x532, Mobile 334x500 */}
-      <div className="relative bg-linear-to-br from-cyan-400 to-cyan-500 rounded-3xl shadow-2xl w-full h-auto
-                      max-w-83.5x-h-[500px]
-                      md:max-w-174.5 md:max-h-133
-                      lg:max-w-7xl lg:max-h-152">
+      <div className="relative bg-linear-to-br from-cyan-400 to-cyan-500 rounded-3xl shadow-2xl w-full h-auto max-w-83.5 max-h-125 md:max-w-174.5 md:max-h-133 lg:max-w-7xl lg:max-h-152">
         {/* Close Button */}
         <button className="absolute top-4 right-4 lg:top-6 lg:right-6 text-white hover:text-gray-200 transition-colors z-10">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
