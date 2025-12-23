@@ -1,15 +1,12 @@
-import React from 'react';
 import headphoneIcon from '../../assets/headphone.png';
 
 const SignInModal = () => {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      {/* Modal Container - Responsive: Desktop 1280x608, Tablet 698x460, Mobile 334x416 */}
-      <div className="relative bg-gradient-to-br from-cyan-400 to-cyan-500 rounded-3xl shadow-2xl w-full h-auto
-                      max-w-[334px] max-h-[416px]
-                      md:max-w-[698px] md:max-h-[460px]
-                      lg:max-w-[1280px] lg:max-h-[608px]">
-        {/* Close Button */}
+      <div className="relative bg-linear-to-br from-cyan-400 to-cyan-500 rounded-3xl shadow-2xl w-full h-auto
+                      max-w-83.5 max-h-104
+                      md:max-w-174.5 md:max-h-115
+                      lg:max-w-7xl lg:max-h-152">
         <button className="absolute top-4 right-4 lg:top-6 lg:right-6 text-white hover:text-gray-200 transition-colors z-10">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -19,8 +16,7 @@ const SignInModal = () => {
 
         {/* Content Container */}
         <div className="flex flex-col lg:flex-row items-center justify-between p-6 md:p-8 lg:p-16 gap-6 lg:gap-8 h-full">
-          {/* Left Side - Headphones Icon (Desktop only) */}
-          <div className="flex-shrink-0 hidden lg:block">
+          <div className="shrink-0 hidden lg:block">
             <img 
               src={headphoneIcon} 
               alt="Headphones with music note" 
