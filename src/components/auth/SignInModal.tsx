@@ -1,5 +1,5 @@
 import React from 'react';
-import headphoneIcon from './assets/headphone.png';
+import headphoneIcon from '../../assets/headphone.png';
 
 const SignInModal = () => {
   return (
