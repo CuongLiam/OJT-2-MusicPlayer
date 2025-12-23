@@ -1,6 +1,6 @@
 import Header from './components/Header/Header'
 import Navbar from './components/Header/Navbar'
-import Artists from './components/Artist/Artists'
+import Artists from './pages/Artist/Artists'
 import Footer from './components/Footer/Footer'
 // import SignInModal from './components/auth/SignInModal'
 // import SignUpModal from './components/auth/SignUpModal'
