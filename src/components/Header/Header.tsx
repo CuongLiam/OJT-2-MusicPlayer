@@ -8,7 +8,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   return (
-    // Z-index thấp hơn Navbar (Navbar là 50), position relative để nội dung hiển thị đúng
     <header className="w-full bg-[#1e2336] text-white py-3 px-4 shadow-md relative z-10">
       <div className="container mx-auto flex items-center justify-between font-josefin">
         
@@ -36,7 +35,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           
           <div className="hidden md:flex items-center gap-2 cursor-pointer hover:text-[#38bdf8] transition-colors ml-51.5 mr-15.5">
             <span className="text-sm">Languages</span>
-            {/* Đảm bảo ảnh tồn tại hoặc comment dòng dưới nếu chưa có ảnh */}
             <img src={LanguageIcon} alt="Language" className="w-5 h-5 object-contain" />
           </div>
 
