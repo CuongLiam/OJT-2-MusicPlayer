@@ -13,7 +13,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
       <div className="container mx-auto flex items-center justify-between">
         
         <div className="flex items-center gap-4 flex-1 h-20">
-          <div className="flex items-center bg-white rounded overflow-hidden max-w-65 w-full h-10">
+          <div className="flex items-center bg-white rounded overflow-hidden h-10 shrink-0 w-full max-w-65 md:max-w-75 transition-all duration-300">
             <input 
               type="text" 
               placeholder="Search Music Here.." 
@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         <div className="flex items-center gap-4">
           
-          <div className="hidden md:flex items-center gap-2 cursor-pointer hover:text-[#38bdf8] transition-colors ml-51.5 mr-15.5">
+          <div className="hidden md:flex items-center gap-2 cursor-pointer hover:text-[#38bdf8] transition-colors ml-auto mr-4 lg:mr-15.5">
             <span className="text-sm">Languages</span>
             <img src={LanguageIcon} alt="Language" className="w-5 h-5 object-contain" />
           </div>

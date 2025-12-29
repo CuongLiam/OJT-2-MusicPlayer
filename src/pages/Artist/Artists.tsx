@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Header from '../../components/Header/Header';
-import Navbar from '../../components/Header/Navbar';
+import Sidebar from '../../components/Header/Sidebar';
 import Footer from '../../components/Footer/Footer';
 import MusicPlayerBar from '../../components/Bar/MusicPlayerBar';
 import '../../assets/css/Font.css';
@@ -91,13 +91,13 @@ const Artists: React.FC = () => {
   return (
     <div className="w-full max-w-360 min-h-screen bg-[#14182a] flex select-none">
 
-      <Navbar
+      <Sidebar
         isOpen={isNavbarOpen}
-        toggleNavbar={() => setIsNavbarOpen(!isNavbarOpen)}
+        toggleSidebar={() => setIsNavbarOpen(!isNavbarOpen)}
       />
 
       <div
-        className="flex-1 flex flex-col min-h-screen ml-20 transition-all duration-300 ease-in-out"
+        className="flex-1 flex flex-col min-h-screen ml-0 xl:ml-20 transition-all duration-300 ease-in-out"
       >
         <Header />
 

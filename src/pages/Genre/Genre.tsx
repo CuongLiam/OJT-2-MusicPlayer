@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from '../../components/Header/Header';
-import Navbar from '../../components/Header/Navbar';
+import Sidebar from '../../components/Header/Sidebar';
 import Footer from '../../components/Footer/Footer';
 import '../../assets/css/Font.css';
 
@@ -112,17 +112,15 @@ const Genre = () => {
 
   return (
     <div className="w-full max-w-360 min-h-screen bg-[#14182a] flex select-none">
-      <Navbar
+      <Sidebar
         isOpen={isNavbarOpen}
-        toggleNavbar={() => setIsNavbarOpen(!isNavbarOpen)}
+        toggleSidebar={() => setIsNavbarOpen(!isNavbarOpen)}
       />
 
       <div
-        className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
-          isNavbarOpen ? 'ml-45 md:ml-62.5' : 'ml-20'
-        }`}
+        className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ml-0 xl:ml-20"
       >
-        <Header />
+        <Header onMenuClick={() => setIsNavbarOpen(true)} />
 
         <main className="flex-1 max-w-360 mx-auto w-full text-white p-3 sm:p-5 md:p-8 lg:px-12 font-sans overflow-x-hidden bg-[#14182a] pb-28 genre-josefin">
           <div className="max-w-7xl mx-auto">

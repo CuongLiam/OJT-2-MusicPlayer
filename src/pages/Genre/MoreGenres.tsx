@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Header from '../../components/Header/Header';
-import Navbar from '../../components/Header/Navbar';
+import Sidebar from '../../components/Header/Sidebar';
 import Footer from '../../components/Footer/Footer';
 import '../../assets/css/Font.css';
 
@@ -68,9 +68,9 @@ export default function MoreGenres() {
 
   return (
     <div className="w-full max-w-360 min-h-screen bg-[#14182a] flex select-none">
-      <Navbar
+      <Sidebar
         isOpen={isNavbarOpen}
-        toggleNavbar={() => setIsNavbarOpen(!isNavbarOpen)}
+        toggleSidebar={() => setIsNavbarOpen(!isNavbarOpen)}
       />
 
       <div

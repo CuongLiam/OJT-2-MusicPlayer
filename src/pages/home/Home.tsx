@@ -1,5 +1,5 @@
 import Header from "../../components/Header/Header";
-import Navbar from "../../components/Header/Navbar";
+import Sidebar from "../../components/Header/Sidebar";
 import Footer from "../../components/Footer/Footer";
 import Banner from "../../components/Home/HomeBanner";
 import HomePageInfo from "../../components/Home/HomePageInfo"
@@ -24,9 +24,9 @@ export default function Home() {
 
   return (
     <div className="w-full min-h-screen bg-[#14182A] flex">
-      <Navbar
+      <Sidebar
         isOpen={isNavbarOpen}
-        toggleNavbar={() => setIsNavbarOpen(!isNavbarOpen)}
+        toggleSidebar={() => setIsNavbarOpen(!isNavbarOpen)}
       />
 
       <div
