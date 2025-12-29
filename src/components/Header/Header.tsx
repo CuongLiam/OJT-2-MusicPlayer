@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaSearch, FaBars, FaUserPlus, FaUser } from 'react-icons/fa';
 import LanguageIcon from '../../assets/Header/LanguageIcon.png';
-import '../../assets/css/HeaderAndNavbar.css';
+import '../../assets/css/Font.css';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -9,11 +9,11 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   return (
-    <header className="max-w-360 bg-[#1e2336] text-white py-3 px-4 shadow-md relative z-10 header-josefin">
+    <header className="max-w-360 bg-[#1e2336] text-white py-3 px-4 shadow-md relative z-10 header-josefin select-none">
       <div className="container mx-auto flex items-center justify-between">
         
         <div className="flex items-center gap-4 flex-1 h-20">
-          <div className="flex items-center bg-white rounded overflow-hidden max-w-65 w-full h-10">
+          <div className="flex items-center bg-white rounded overflow-hidden h-10 shrink-0 w-full max-w-65 md:max-w-75 transition-all duration-300">
             <input 
               type="text" 
               placeholder="Search Music Here.." 
@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         <div className="flex items-center gap-4">
           
-          <div className="hidden md:flex items-center gap-2 cursor-pointer hover:text-[#38bdf8] transition-colors ml-51.5 mr-15.5">
+          <div className="hidden md:flex items-center gap-2 cursor-pointer hover:text-[#38bdf8] transition-colors ml-auto mr-4 lg:mr-15.5">
             <span className="text-sm">Languages</span>
             <img src={LanguageIcon} alt="Language" className="w-5 h-5 object-contain" />
           </div>

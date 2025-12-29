@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import Ad from "../../assets/image/Home-ad.jpg"
 
 interface Song {
