@@ -6,7 +6,7 @@ export interface Genre {
 export interface Song {
   id: number;
   title: string;
-  duration: string; 
+  duration: string;
   album_id?: number | null;
   file_url: string;
   views: number;
@@ -15,8 +15,8 @@ export interface Song {
 
   genres?: Genre[];
   artist_name?: string;
+  album?: Album; 
 }
-
 
 export enum AlbumType {
   FREE = 'FREE',
