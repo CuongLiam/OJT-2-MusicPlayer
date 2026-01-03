@@ -2,9 +2,9 @@
   "users": [
     {
       "id": 1,
-      "first_name": "Admin",
+      "first_name": "Liam",
       "last_name": "System",
-      "email": "admin@music.com",
+      "email": "liam123@gmail.com",
       "profile_image": "https://res.cloudinary.com/douhnxire/image/upload/v1767059940/admin-image_s9ylcu.png",
       "bio": "Quản trị viên hệ thống cấp cao",
       "status": "ACTIVE",
