@@ -1,47 +1,55 @@
-import { useEffect, useRef } from "react";
+// src/pages/Album/AllAlbumsByArtists.tsx
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; 
 import { ArrowLeft } from "lucide-react";       
 
+// Components
 import Header from "../../components/Header/Header";
 import Sidebar, { useSidebarState } from "../../components/Header/Sidebar";
 import Footer from "../../components/Footer/Footer";
 import MusicPlayerBar from "../../components/Bar/MusicPlayerBar";
-import AlbumCard, { type AlbumData } from "../../components/Album/AlbumCard"; 
+import AlbumCard from "../../components/Album/AlbumCard"; 
 
-
-const ARTIST_ALBUMS: AlbumData[] = [
-  { id: 1, title: "Bloodlust", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 2, title: "Time flies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" },
-  { id: 3, title: "Dark matters", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop" },
-  { id: 4, title: "Eye to eye", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" },
-  { id: 5, title: "Cloud nine", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" },
-  { id: 6, title: "Cobweb of lies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" },
-  { id: 7, title: "New Horizon", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop" },
-  { id: 8, title: "Silent Night", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 9, title: "Another World", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=400&auto=format&fit=crop" },
-  { id: 10, title: "Echoes", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 11, title: "Summer Vibes", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1485579149621-3123dd979885?q=80&w=400&auto=format&fit=crop" },
-  { id: 12, title: "Winter Chill", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 13, title: "Time flies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" },
-  { id: 14, title: "Dark matters", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop" },
-  { id: 15, title: "Eye to eye", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" },
-  { id: 16, title: "Cloud nine", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" },
-  { id: 17, title: "Cobweb of lies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" },
-  { id: 18, title: "New Horizon", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop" },
-  { id: 19, title: "Silent Night", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 20, title: "Another World", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=400&auto=format&fit=crop" },
-  { id: 21, title: "Echoes", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 22, title: "Summer Vibes", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1485579149621-3123dd979885?q=80&w=400&auto=format&fit=crop" },
-  { id: 23, title: "Winter Chill", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 24, title: "Winter Chill", artist: "Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-];
+// Types
+import { Album, User } from "../../types/music.types";
 
 const AllAlbumsByArtists = () => {
   const { isNavbarOpen, toggleSidebar, setSidebarOpen } = useSidebarState();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const mainRef = useRef<HTMLElement>(null);
-  
+
+  // State lưu trữ Albums thật
+  const [albums, setAlbums] = useState<Album[]>([]);
+
+  // 1. Fetch và Xử lý dữ liệu
+  useEffect(() => {
+    Promise.all([
+      fetch('http://localhost:3000/users').then(res => res.json()),
+      fetch('http://localhost:3000/albums').then(res => res.json())
+    ])
+    .then(([usersData, albumsData]) => {
+      
+      // Tạo Map Artist Name: { "5": "Sơn Tùng M-TP", ... }
+      const artistMap: Record<string, string> = {};
+      usersData.forEach((u: User) => {
+        if (u.roles.includes("ROLE_ARTIST")) {
+          artistMap[u.id] = `${u.first_name} ${u.last_name}`.trim();
+        }
+      });
+
+      // Ghép tên Artist vào Album
+      const mergedAlbums = albumsData.map((album: any) => ({
+        ...album,
+        artist_name: artistMap[String(album.artist_id)] || "Unknown Artist"
+      }));
+
+      setAlbums(mergedAlbums);
+    })
+    .catch(err => console.error("Lỗi tải dữ liệu:", err));
+  }, []);
+
+  // 2. Logic scroll lên đầu trang khi chuyển trang
   useEffect(() => {
     const timer = setTimeout(() => {
       if (mainRef.current) {
@@ -69,10 +77,11 @@ const AllAlbumsByArtists = () => {
             className="flex-1 w-full bg-[#14182a] overflow-y-auto pb-2 pt-8 pl-4 pr-0 xl:px-8 -ml-5 h-screen scrollbar-hide"
         >
             <section className="w-full max-w-362.5 mx-auto">
-                <div className="flex items-end gap-4 mb-8 pl-4 pr-0 md:pl-8 md:pr-0 xl:px-16">
+                {/* Header Section: Back Button + Title */}
+                <div className="relative mb-8 px-2 xl:px-16 flex flex-col gap-1"> 
                     <button 
-                      onClick={() => navigate('/album')}
-                      className="text-white hover:text-[#3BC8E7] transition-colors cursor-pointer outline-none shrink-0 mb-1"
+                      onClick={() => navigate('/album')} // Quay về trang Album chính
+                      className="absolute left-0 xl:left-4 bottom-2 text-white hover:text-[#3BC8E7] transition-colors cursor-pointer outline-none"
                       title="Back"
                     >
                       <ArrowLeft size={32} />
@@ -86,10 +95,15 @@ const AllAlbumsByArtists = () => {
                     </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-x-6 gap-y-8 pl-4 pr-0 md:pl-8 md:pr-0 xl:px-16 pb-20 justify-items-center">
-                    {ARTIST_ALBUMS.map((album) => (
-                        <AlbumCard key={album.id} album={album} className="w-full" />
-                    ))}
+                {/* Grid hiển thị Albums thật */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-8 px-2 xl:px-16 pb-20 justify-items-start">
+                    {albums.length > 0 ? (
+                      albums.map((album) => (
+                          <AlbumCard key={album.id} album={album} />
+                      ))
+                    ) : (
+                      <p className="text-gray-400 col-span-full text-center">Đang tải albums...</p>
+                    )}
                 </div>
 
             </section>

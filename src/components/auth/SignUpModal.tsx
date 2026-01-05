@@ -185,6 +185,8 @@ const SignUpModal = ({ onClose }: { onClose?: () => void }) => {
             </form>
           </div>
         </div>
+
+      
       </div>
     </div>
   );

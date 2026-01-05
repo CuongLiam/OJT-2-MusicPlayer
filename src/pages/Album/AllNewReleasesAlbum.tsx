@@ -1,43 +1,60 @@
+// src/pages/Album/AllNewReleases.tsx
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { ArrowLeft } from "lucide-react";       
 
+// Components
 import Header from "../../components/Header/Header";
-import Sidebar, { useSidebarState } from "../../components/Header/Sidebar";
+import Sidebar from "../../components/Header/Sidebar";
 import Footer from "../../components/Footer/Footer";
 import MusicPlayerBar from "../../components/Bar/MusicPlayerBar";
 import AlbumCard from "../../components/Album/AlbumCard"; 
 
+// Types
 import { Album, User } from "../../types/music.types";
 
-const AllTrendingAlbums = () => {
-  const { isNavbarOpen, toggleSidebar, setSidebarOpen } = useSidebarState();
+const AllNewReleases = () => {
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const navigate = useNavigate(); 
   const { pathname } = useLocation();
   const mainRef = useRef<HTMLElement>(null);
 
-  const [trendingAlbums, setTrendingAlbums] = useState<Album[]>([]);
+  // State lưu trữ New Releases Albums
+  const [newReleases, setNewReleases] = useState<Album[]>([]);
+
+  // 1. Fetch và Xử lý dữ liệu
   useEffect(() => {
     Promise.all([
       fetch('http://localhost:3000/users').then(res => res.json()),
       fetch('http://localhost:3000/albums').then(res => res.json())
     ])
     .then(([usersData, albumsData]) => {
+      
+      // Tạo Map Artist Name
       const artistMap: Record<string, string> = {};
       usersData.forEach((u: User) => {
         if (u.roles.includes("ROLE_ARTIST")) {
           artistMap[u.id] = `${u.first_name} ${u.last_name}`.trim();
         }
       });
+
+      // Ghép tên Artist vào Album
       const mergedAlbums = albumsData.map((album: any) => ({
         ...album,
         artist_name: artistMap[String(album.artist_id)] || "Unknown Artist"
       }));
-      setTrendingAlbums(mergedAlbums);
+
+      // --- LOGIC QUAN TRỌNG: Sắp xếp theo ngày phát hành giảm dần ---
+      const sortedAlbums = mergedAlbums.sort((a: Album, b: Album) => 
+        new Date(b.release_date).getTime() - new Date(a.release_date).getTime()
+      );
+
+      setNewReleases(sortedAlbums);
     })
     .catch(err => console.error("Lỗi tải dữ liệu:", err));
   }, []);
 
+  // 2. Logic scroll lên đầu trang khi chuyển trang
   useEffect(() => {
     const timer = setTimeout(() => {
       if (mainRef.current) {
@@ -53,11 +70,11 @@ const AllTrendingAlbums = () => {
     <div className="w-full min-h-screen bg-[#14182a] flex select-none overflow-hidden">
       <Sidebar
         isOpen={isNavbarOpen}
-        toggleSidebar={toggleSidebar}
+        toggleSidebar={() => setIsNavbarOpen(!isNavbarOpen)}
       />
 
       <div className="flex-1 flex flex-col min-h-screen ml-0 xl:ml-20 transition-all">
-        <Header onMenuClick={() => setSidebarOpen(true)} />
+        <Header onMenuClick={() => setIsNavbarOpen(true)} />
 
         <main 
             ref={mainRef}
@@ -65,23 +82,24 @@ const AllTrendingAlbums = () => {
             className="flex-1 w-full bg-[#14182a] overflow-y-auto pb-2 pt-8 px-4 xl:px-8 -ml-5 h-screen scrollbar-hide"
         >
             <section className="w-full max-w-362.5 mx-auto">
-                <div className="flex items-end gap-4 mb-8 pl-4 pr-0 md:pl-8 md:pr-0 xl:px-16">
+                <div className="relative mb-8 px-2 xl:px-16 flex flex-col gap-1"> 
                     <button 
                       onClick={() => navigate('/album')}
-                      className="text-white hover:text-[#3BC8E7] transition-colors cursor-pointer outline-none shrink-0 mb-1"
+                      className="absolute left-0 xl:left-4 bottom-2 text-white hover:text-[#3BC8E7] transition-colors cursor-pointer outline-none"
                       title="Back"
                     >
                       <ArrowLeft size={32} />
                     </button>
                     <h2 className="text-xl md:text-2xl font-bold text-[#3BC8E7] tracking-wide">
-                        All Trending Albums
+                        All New Releases
                     </h2>
                     <div className="h-0.75 w-12 bg-[#3BC8E7] rounded-full mt-1"></div>
                 </div>
 
+                {/* Grid hiển thị All New Releases */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-8 px-2 xl:px-16 pb-20 justify-items-start">
-                    {trendingAlbums.length > 0 ? (
-                        trendingAlbums.map((album) => (
+                    {newReleases.length > 0 ? (
+                        newReleases.map((album) => (
                             <AlbumCard key={album.id} album={album} />
                         ))
                     ) : (
@@ -97,4 +115,4 @@ const AllTrendingAlbums = () => {
   );
 };
 
-export default AllTrendingAlbums;
+export default AllNewReleases;

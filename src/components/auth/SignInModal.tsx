@@ -77,7 +77,7 @@ const SignInModal = ({ onClose }: { onClose?: () => void }) => {
             <img
               src={headphoneIcon}
               alt="Headphones with music note"
-              className="w-48 h-48 lg:w-64 lg:h-64 object-contain"
+              className="w-111.5 h-111.5 lg:w-64 lg:h-64 object-contain"
             />
           </div>
 
@@ -158,6 +158,8 @@ const SignInModal = ({ onClose }: { onClose?: () => void }) => {
             </form>
           </div>
         </div>
+
+   
       </div>
     </div>
   );

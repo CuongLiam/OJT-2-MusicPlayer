@@ -15,15 +15,22 @@ interface DBSong {
   id: number | string;
   title: string;
   artist_id: number;
+  album_id: number;
   genre_ids: number[];
-  cover_image: string;
+  cover_image?: string;
 }
 
 interface DBUser {
-  id: number;
+  id: number | string;
   first_name: string;
   last_name: string;
   roles: string[];
+}
+
+interface DBAlbum {
+  id: number | string;
+  title: string;
+  cover_image: string;
 }
 
 interface SongUI {
@@ -46,15 +53,17 @@ export default function MoreGenres() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [genresRes, songsRes, usersRes] = await Promise.all([
+        const [genresRes, songsRes, usersRes, albumsRes] = await Promise.all([
           fetch('http://localhost:3000/genres'),
           fetch('http://localhost:3000/songs'),
-          fetch('http://localhost:3000/users')
+          fetch('http://localhost:3000/users'),
+          fetch('http://localhost:3000/albums')
         ]);
 
         const genres: DBGenre[] = await genresRes.json();
         const songs: DBSong[] = await songsRes.json();
         const users: DBUser[] = await usersRes.json();
+        const albums: DBAlbum[] = await albumsRes.json();
 
         const newSections: GenreSection[] = genres.map((genre) => {
           const genreSongs = songs.filter((song) => 
@@ -62,14 +71,24 @@ export default function MoreGenres() {
           );
 
           const uiSongs: SongUI[] = genreSongs.map((song) => {
-            const artist = users.find(u => u.id === song.artist_id);
+            const artist = users.find(u => String(u.id) === String(song.artist_id));
             const artistName = artist ? `${artist.first_name} ${artist.last_name}` : 'Unknown Artist';
+
+            const album = albums.find(a => String(a.id) === String(song.album_id));
+            
+            let finalImage = 'https://placehold.co/400'; 
+            
+            if (song.cover_image) {
+              finalImage = song.cover_image;
+            } else if (album && album.cover_image) {
+              finalImage = album.cover_image;
+            }
 
             return {
               id: song.id,
               title: song.title,
               artist: artistName,
-              image: song.cover_image 
+              image: finalImage
             };
           });
 
@@ -120,14 +139,14 @@ export default function MoreGenres() {
 
                 <button
                   onClick={() => handleScroll(idx, 'left')}
-                  className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/80 p-2 rounded-full text-white hidden md:group-hover:block transition-all backdrop-blur-sm"
+                  className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/80 p-2 rounded-full text-white hidden md:block opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm cursor-pointer"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 
                 <button
                   onClick={() => handleScroll(idx, 'right')}
-                  className="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/80 p-2 rounded-full text-white hidden md:group-hover:block transition-all backdrop-blur-sm"
+                  className="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/80 p-2 rounded-full text-white hidden md:block opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm cursor-pointer"
                 >
                   <ChevronRight size={24} />
                 </button>

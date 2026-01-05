@@ -1,31 +1,20 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import AlbumCard, { type AlbumData } from './AlbumCard';
+import AlbumCard from './AlbumCard'; // Import component đã sửa ở các bước trước
+import { Album } from '../../types/music.types'; // Import Interface chuẩn
 
-const ARTIST_ALBUMS: AlbumData[] = [
-  { id: 1, title: "Bloodlust", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400&auto=format&fit=crop" },
-  { id: 2, title: "Time flies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" },
-  { id: 3, title: "Dark matters", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop" },
-  { id: 4, title: "Eye to eye", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" },
-  { id: 5, title: "Cloud nine", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" },
-  { id: 6, title: "Cobweb of lies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" },
-  { id: 7, title: "New Horizon", artist: "Ava Cornish", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop" },
-  { id: 8, title: "Dream Your Moments (Duet)", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=400&auto=format&fit=crop" },
-  { id: 9, title: "Cobweb of lies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" },
-  { id: 10, title: "Cobweb of lies", artist: "Ava Cornish & Brian Hill", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" },
-];
+// Định nghĩa props nhận vào là mảng Album thật
+interface AlbumsByArtistsProps {
+  data: Album[]; 
+}
 
-const AlbumsByArtists = () => {
+const AlbumsByArtists: React.FC<AlbumsByArtistsProps> = ({ data }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
       const { current } = scrollRef;
-      const firstCard = current.firstElementChild as HTMLElement;
-      const cardWidth = firstCard ? firstCard.offsetWidth : 175;
-      const gap = 24; 
-      const scrollAmount = cardWidth + gap;
-
+      const scrollAmount = 199; // Giữ nguyên con số 199 như code cũ của bạn
       if (direction === 'left') {
         current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       } else {
@@ -34,8 +23,12 @@ const AlbumsByArtists = () => {
     }
   };
 
+  // Nếu không có dữ liệu thì không hiển thị
+  if (!data || data.length === 0) return null;
+
   return (
     <section className="w-full max-w-362.5 mx-auto mt-12 mb-16">
+      {/* Header giữ nguyên CSS cũ */}
       <div className="flex justify-between items-end mb-2 px-2 xl:px-16">
         <div className="flex flex-col gap-1">
           <h2 className="text-xl md:text-2xl font-bold text-[#3BC8E7] tracking-wide">
@@ -51,8 +44,8 @@ const AlbumsByArtists = () => {
           View More
         </Link>
       </div>
-      
-      <div className="flex items-center justify-center gap-6 mt-10 w-full px-4 md:px-0">
+
+      <div className="flex items-center justify-center gap-6 mt-10 w-full">
         <button 
           onClick={() => scroll('left')}
           className="shrink-0 z-20 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition-all cursor-pointer bg-[#14182a]/50 rounded-full border border-white/10 hover:bg-white/10"
@@ -67,12 +60,8 @@ const AlbumsByArtists = () => {
           className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth w-full xl:max-w-292.5"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {ARTIST_ALBUMS.map((album) => (
-            <AlbumCard 
-              key={album.id} 
-              album={album}
-              className="shrink-0 w-full md:w-[calc(50%-12px)] xl:w-43.75" 
-            />
+          {data.map((album) => (
+            <AlbumCard key={album.id} album={album} />
           ))}
         </div>
 
