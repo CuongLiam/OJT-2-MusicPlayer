@@ -258,6 +258,22 @@
       ],
       "created_at": "2026-01-04T16:09:03.129Z",
       "updated_at": "2026-01-04T16:09:03.129Z"
+    },
+    {
+      "id": "3fe6",
+      "first_name": "ptphong",
+      "last_name": "",
+      "email": "thanhphong102006@gmail.com",
+      "username": "thanhphong102006@gmail.com",
+      "password": "123123",
+      "profile_image": null,
+      "bio": null,
+      "status": "ACTIVE",
+      "roles": [
+        "ROLE_USER"
+      ],
+      "created_at": "2026-01-05T00:47:08.031Z",
+      "updated_at": "2026-01-05T00:47:08.105Z"
     }
   ],
   "genres": [
