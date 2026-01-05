@@ -9,7 +9,6 @@ import AllFeaturedAlbums from './pages/Album/AllFeaturedAlbums'
 import AllTrendingAlbums from './pages/Album/AllTrendingAlbums'
 import AllAlbumsByArtists from './pages/Album/AllAlbumsByArtists'
 import Admin from './pages/Admin/Admin'
-import ProtectedAdmin from './pages/Admin/auth/ProtectedAdmin'
 import AdminDashboard from './pages/Admin/Dashboard'
 import AdminUser from './pages/Admin/Users'
 import AdminGenre from './pages/Admin/Genres'
@@ -23,19 +22,20 @@ import SignUpModal from './components/auth/SignUpModal'
 import Favourite from  './pages/Favourite/Favourite'
 import TopTrack from './pages/TopTracks/TopTrack'
 import AllNewReleases from './pages/Album/AllNewReleasesAlbum'
+import RequireAdmin from './pages/Admin/auth/RequireAdmin'
 
 export default function RouterConfig() {
   return (
     <Routes>
       <Route path='/' element = {<Home/>}></Route>
 
-      <Route path='/signin' element = {<SignInModal/>}></Route>
-      <Route path='/signup' element = {<SignUpModal/>}></Route>
+      {/* <Route path='/signin' element = {<SignInModal/>}></Route>
+      <Route path='/signup' element = {<SignUpModal/>}></Route> */}
 
       <Route path='/admin' element={
-        <ProtectedAdmin>
-          <Admin />
-        </ProtectedAdmin>
+        <RequireAdmin>
+        <Admin />
+        </RequireAdmin>
       }>
         <Route index element={<Navigate to="/admin/dashboard" />} />
         <Route path="dashboard" element={<AdminDashboard />} />
