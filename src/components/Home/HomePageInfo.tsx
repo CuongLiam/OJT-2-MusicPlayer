@@ -68,7 +68,7 @@ const SongCard = ({
   onClick?: () => void;
 }) => (
   <div className="group cursor-pointer bg-transparent" onClick={onClick}>
-    <div className="relative overflow-hidden rounded-xl mb-3 bg-gray-800 transition-all duration-300 group-hover:ring-2 group-hover:ring-[#3BC8E7]/50 w-[175px] h-[175px]">
+    <div className="relative overflow-hidden rounded-xl mb-3 bg-gray-800 transition-all duration-300 group-hover:ring-2 group-hover:ring-[#3BC8E7]/50 w-43.75 h-43.75">
       <img
         src={song.album_cover || song.artist_image}
         alt={song.title}
@@ -87,10 +87,10 @@ const SongCard = ({
         </div>
       </div>
     </div>
-    <h3 className="text-sm text-gray-200 font-medium truncate group-hover:text-[#3BC8E7] transition-colors w-[175px]">
+    <h3 className="text-sm text-gray-200 font-medium truncate group-hover:text-[#3BC8E7] transition-colors w-43.75">
       {song.title}
     </h3>
-    <p className="text-sm text-gray-400 truncate w-[175px]">
+    <p className="text-sm text-gray-400 truncate w-43.75">
       {song.artist_name}
     </p>
   </div>
@@ -148,7 +148,7 @@ const TopSongRow = ({
     </div>
 
     {/* Bottom line */}
-    <div className="h-px bg-gradient-to-r from-transparent via-gray-700/30 to-transparent mx-2"></div>
+    <div className="h-px bg-linear-to-r from-transparent via-gray-700/30 to-transparent mx-2"></div>
   </div>
 );
 
@@ -163,7 +163,7 @@ const ArtistCard = ({
   onClick?: () => void;
 }) => (
   <div className="group cursor-pointer bg-transparent" onClick={onClick}>
-    <div className="relative overflow-hidden rounded-xl mb-3 bg-gray-800 transition-all duration-300 group-hover:ring-2 group-hover:ring-[#3BC8E7]/50 w-[175px] h-[175px]">
+    <div className="relative overflow-hidden rounded-xl mb-3 bg-gray-800 transition-all duration-300 group-hover:ring-2 group-hover:ring-[#3BC8E7]/50 w-43.75 h-43.75">
       <img
         src={
           artist.profile_image || "https://via.placeholder.com/175?text=Artist"
@@ -173,10 +173,10 @@ const ArtistCard = ({
       />
       <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
     </div>
-    <h3 className="text-sm text-gray-200 font-medium truncate group-hover:text-[#3BC8E7] transition-colors w-[175px]">
+    <h3 className="text-sm text-gray-200 font-medium truncate group-hover:text-[#3BC8E7] transition-colors w-43.75">
       {artist.first_name} {artist.last_name}
     </h3>
-    <p className="text-xs text-gray-400 w-[175px]">
+    <p className="text-xs text-gray-400 w-43.75">
       {artist.song_count} bài hát
     </p>
   </div>
@@ -193,7 +193,7 @@ const AlbumCard = ({
   onClick?: () => void;
 }) => (
   <div className="group cursor-pointer bg-transparent" onClick={onClick}>
-    <div className="relative overflow-hidden rounded-xl mb-3 bg-gray-800 transition-all duration-300 group-hover:ring-2 group-hover:ring-[#3BC8E7]/50 w-[175px] h-[175px]">
+    <div className="relative overflow-hidden rounded-xl mb-3 bg-gray-800 transition-all duration-300 group-hover:ring-2 group-hover:ring-[#3BC8E7]/50 w-43.75 h-43.75">
       <img
         src={album.cover_image}
         alt={album.title}
@@ -209,10 +209,10 @@ const AlbumCard = ({
         </div>
       </div>
     </div>
-    <h3 className="text-sm text-gray-200 font-medium truncate group-hover:text-[#3BC8E7] transition-colors w-[175px]">
+    <h3 className="text-sm text-gray-200 font-medium truncate group-hover:text-[#3BC8E7] transition-colors w-43.75">
       {album.title}
     </h3>
-    <p className="text-sm text-gray-400 truncate w-[175px]">
+    <p className="text-sm text-gray-400 truncate w-43.75">
       {album.artist_name}
     </p>
   </div>
@@ -267,7 +267,7 @@ const GenreCard = ({
   onClick?: () => void;
 }) => (
   <div
-    className="group cursor-pointer relative overflow-hidden rounded-xl bg-gray-800 h-[175px] transition-all duration-300 hover:ring-2 hover:ring-[#3BC8E7]/50"
+    className="group cursor-pointer relative overflow-hidden rounded-xl bg-gray-800 h-43.75 transition-all duration-300 hover:ring-2 hover:ring-[#3BC8E7]/50"
     onClick={onClick}
   >
     <img
@@ -278,7 +278,7 @@ const GenreCard = ({
       alt={genre.genre_name}
       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
     />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent"></div>
     <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
       <div>
         <h3 className="text-lg font-semibold text-white">{genre.genre_name}</h3>
@@ -450,7 +450,7 @@ export default function HomePageInfo() {
   return (
     <div className="w-full bg-[#14182A]">
       <section className="relative w-full overflow-hidden mt-12">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-8 lg:px-12">
+        <div className="max-w-340 mx-auto px-6 md:px-8 lg:px-12">
           <div className="relative group/slider">
             <SectionHeader title="Recently Played" showViewMore={true} />
 
@@ -531,7 +531,7 @@ export default function HomePageInfo() {
       </section>
 
       <section className="relative w-full mt-12">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-8 lg:px-12">
+        <div className="max-w-340 mx-auto px-6 md:px-8 lg:px-12">
           <SectionHeader title="Weekly Top 15" />
 
           {/* Desktop: 3 columns */}
@@ -568,7 +568,7 @@ export default function HomePageInfo() {
       </section>
 
       <section className="relative w-full overflow-hidden mt-12">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-8 lg:px-12">
+        <div className="max-w-340 mx-auto px-6 md:px-8 lg:px-12">
           <div className="relative group/slider">
             <SectionHeader
               title="Featured Artists"
@@ -634,7 +634,7 @@ export default function HomePageInfo() {
       </section>
 
       <section className="relative w-full overflow-hidden mt-12">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-8 lg:px-12">
+        <div className="max-w-340 mx-auto px-6 md:px-8 lg:px-12">
           <div className="relative group/slider">
             <SectionHeader title="New Releases" showViewMore={true} />
             <button
@@ -686,7 +686,7 @@ export default function HomePageInfo() {
       </section>
 
       <section className="relative w-full overflow-hidden mt-12">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-8 lg:px-12">
+        <div className="max-w-340 mx-auto px-6 md:px-8 lg:px-12">
           <div className="relative group/slider">
             <SectionHeader
               title="Featured Albums"
@@ -742,7 +742,7 @@ export default function HomePageInfo() {
       </section>
 
       <section className="relative w-full mt-12 mb-20">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-8 lg:px-12">
+        <div className="max-w-340 mx-auto px-6 md:px-8 lg:px-12">
           <SectionHeader
             title="Top Genres"
             showViewMore={true}
