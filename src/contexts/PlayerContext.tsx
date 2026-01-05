@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import type { Song } from '../types/music.types';
 
 type PlayerContextType = {
@@ -6,9 +7,9 @@ type PlayerContextType = {
   index: number | null;
   currentSong: Song | null;
   isPlaying: boolean;
-  currentTime: number; // seconds
-  duration: number; // seconds
-  volume: number; // 0..1
+  currentTime: number;
+  duration: number;
+  volume: number;
   playSong: (song: Song, startQueue?: Song[]) => void;
   playQueue: (songs: Song[], startIndex?: number) => void;
   togglePlay: () => void;
@@ -25,6 +26,8 @@ const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
 
 export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastViewedSongIdRef = useRef<string | null>(null);
+
   const [queue, setQueueState] = useState<Song[]>([]);
   const [index, setIndex] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -32,28 +35,18 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
 
-  // initialize audio once
+  // ---------- INIT AUDIO ----------
   useEffect(() => {
     const audio = new Audio();
     audio.crossOrigin = 'anonymous';
     audio.preload = 'metadata';
     audioRef.current = audio;
 
-    const onTime = () => {
-      if (!audioRef.current) return;
-      setCurrentTime(audioRef.current.currentTime || 0);
-    };
-    const onLoaded = () => {
-      if (!audioRef.current) return;
-      setDuration(isFinite(audioRef.current.duration) ? audioRef.current.duration : 0);
-    };
-    const onEnded = () => {
-      next(); // auto next
-    };
-    const onError = () => {
-      // try to skip to next on error
-      next();
-    };
+    const onTime = () => setCurrentTime(audio.currentTime || 0);
+    const onLoaded = () =>
+      setDuration(isFinite(audio.duration) ? audio.duration : 0);
+    const onEnded = () => next();
+    const onError = () => next();
 
     audio.addEventListener('timeupdate', onTime);
     audio.addEventListener('loadedmetadata', onLoaded);
@@ -72,7 +65,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // keep volume in sync
+  // ---------- VOLUME ----------
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
@@ -81,105 +74,82 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setQueueState(songs || []);
   }
 
-  /**
-   * Load and (try to) play an index.
-   * If songsParam is provided, use that array (and set queue to it).
-   * This avoids relying on possibly-stale `queue` state right after setQueueState.
-   */
+  // ---------- VIEW COUNTER ----------
+  async function incrementView(song: Song) {
+    try {
+      await axios.patch(`${import.meta.env.VITE_SV_HOST}/songs/${song.id}`, {
+        views: (song.views ?? 0) + 1,
+      });
+    } catch (err) {
+      console.error('Failed to increment view:', err);
+    }
+  }
+
+  // ---------- CORE LOAD ----------
   function loadIndex(i: number | null, songsParam?: Song[]) {
     const audio = audioRef.current;
-    const q = Array.isArray(songsParam) ? songsParam : queue;
+    const q = songsParam ?? queue;
 
-    if (i === null || !q[i] || !audio) {
+    if (!audio || i === null || !q[i]) {
       setIndex(null);
-      setDuration(0);
+      setIsPlaying(false);
       setCurrentTime(0);
+      setDuration(0);
       if (audio) {
         audio.pause();
         audio.src = '';
       }
-      setIsPlaying(false);
       return;
     }
 
     const s = q[i];
-    // Set the queue state to the provided array if given (keeps state consistent)
-    if (songsParam && Array.isArray(songsParam)) {
-      setQueueState(songsParam);
-    } else {
-      // ensure queue state contains q (defensive)
-      setQueueState(q);
+
+    // 🔥 COUNT VIEW ONCE PER SONG LOAD
+    if (lastViewedSongIdRef.current !== String(s.id)) {
+      lastViewedSongIdRef.current = String(s.id);
+      incrementView(s);
     }
 
+    setQueueState(q);
     setIndex(i);
     setCurrentTime(0);
     setDuration(0);
 
-    // set audio source and attempt to play immediately
     audio.pause();
     audio.src = s.file_url;
-    // ensure metadata is (re)loaded
-    try {
-      audio.load();
-    } catch (err) {
-      // ignore
-    }
+    audio.load();
 
-    const playPromise = audio.play();
-    if (playPromise && typeof playPromise.then === 'function') {
-      playPromise
-        .then(() => {
-          setIsPlaying(true);
-          // duration will be set by 'loadedmetadata' event
-        })
-        .catch(() => {
-          // autoplay blocked: keep paused but loaded
-          setIsPlaying(false);
-        });
-    } else {
-      setIsPlaying(true);
-    }
-  }
-
-  /**
-   * Play single song. If startQueue is provided, use it as the queue
-   * (and start at the song's index). Otherwise play the single song alone.
-   */
-  function playSong(song: Song, startQueue?: Song[]) {
-    if (startQueue && Array.isArray(startQueue) && startQueue.length > 0) {
-      const idx = startQueue.findIndex((x) => String(x.id) === String(song.id));
-      if (idx >= 0) {
-        // directly load the provided queue and index
-        loadIndex(idx, startQueue);
-      } else {
-        // put the song first
-        const arr = [song, ...startQueue];
-        loadIndex(0, arr);
-      }
-    } else {
-      // single song -> set queue to only that song and load index 0
-      loadIndex(0, [song]);
-    }
-  }
-
-  /**
-   * Play an array of songs as a queue starting from startIndex.
-   */
-  function playQueue(songs: Song[], startIndex = 0) {
-    if (!Array.isArray(songs) || songs.length === 0) return;
-    const idx = Math.max(0, Math.min(startIndex, songs.length - 1));
-    loadIndex(idx, songs);
-  }
-
-  function play() {
-    const audio = audioRef.current;
-    if (!audio) return;
     const p = audio.play();
     if (p && typeof p.then === 'function') {
       p.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     } else {
       setIsPlaying(true);
     }
+  }
+
+  // ---------- PUBLIC API ----------
+  function playSong(song: Song, startQueue?: Song[]) {
+    if (startQueue && startQueue.length > 0) {
+      const idx = startQueue.findIndex(s => String(s.id) === String(song.id));
+      if (idx >= 0) loadIndex(idx, startQueue);
+      else loadIndex(0, [song, ...startQueue]);
+    } else {
+      loadIndex(0, [song]);
+    }
+  }
+
+  function playQueue(songs: Song[], startIndex = 0) {
+    if (!songs.length) return;
+    loadIndex(startIndex, songs);
+  }
+
+  function play() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.play().then(
+      () => setIsPlaying(true),
+      () => setIsPlaying(false)
+    );
   }
 
   function pause() {
@@ -190,17 +160,15 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }
 
   function togglePlay() {
-    if (!audioRef.current) return;
-    if (isPlaying) pause();
-    else play();
+    isPlaying ? pause() : play();
   }
 
   function seekTo(seconds: number) {
     const audio = audioRef.current;
     if (!audio) return;
-    const clamped = Math.max(0, Math.min(seconds, audio.duration || seconds));
-    audio.currentTime = clamped;
-    setCurrentTime(clamped);
+    const t = Math.max(0, Math.min(seconds, audio.duration || seconds));
+    audio.currentTime = t;
+    setCurrentTime(t);
   }
 
   function setVolume(v: number) {
@@ -211,51 +179,43 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   function next() {
     if (queue.length === 0) return;
-    if (index === null) {
-      loadIndex(0);
-      return;
-    }
-    const nextIndex = index + 1;
-    if (nextIndex < queue.length) {
-      loadIndex(nextIndex);
-    } else {
-      // reached end -> stop and keep last song loaded
-      pause();
-    }
+    if (index === null) loadIndex(0);
+    else if (index + 1 < queue.length) loadIndex(index + 1);
+    else pause();
   }
 
   function prev() {
     if (queue.length === 0) return;
-    if (index === null) {
-      loadIndex(0);
-      return;
-    }
-    const prevIndex = index - 1;
-    if (prevIndex >= 0) loadIndex(prevIndex);
+    if (index === null) loadIndex(0);
+    else if (index > 0) loadIndex(index - 1);
     else loadIndex(0);
   }
 
-  const contextValue: PlayerContextType = {
-    queue,
-    index,
-    currentSong: index !== null && queue[index] ? queue[index] : null,
-    isPlaying,
-    currentTime,
-    duration,
-    volume,
-    playSong,
-    playQueue,
-    togglePlay,
-    play,
-    pause,
-    next,
-    prev,
-    seekTo,
-    setVolume,
-    setQueue,
-  };
-
-  return <PlayerContext.Provider value={contextValue}>{children}</PlayerContext.Provider>;
+  return (
+    <PlayerContext.Provider
+      value={{
+        queue,
+        index,
+        currentSong: index !== null ? queue[index] ?? null : null,
+        isPlaying,
+        currentTime,
+        duration,
+        volume,
+        playSong,
+        playQueue,
+        togglePlay,
+        play,
+        pause,
+        next,
+        prev,
+        seekTo,
+        setVolume,
+        setQueue,
+      }}
+    >
+      {children}
+    </PlayerContext.Provider>
+  );
 };
 
 export function usePlayer() {
