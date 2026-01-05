@@ -30,6 +30,7 @@ import AlbumManagement from './pages/ArtistAdmin/components/AlbumManagement'
 import Settings from './pages/ArtistAdmin/components/Settings'
 import ArtistLogin from './pages/ArtistAdmin/auth/ArtistLogin'
 import ArtistRegis from './pages/ArtistAdmin/auth/ArtistRegis'
+import History from './pages/History/history'
 
 export default function RouterConfig() {
   return (
@@ -148,6 +149,7 @@ export default function RouterConfig() {
         }
       />
 
+    
       <Route path='/artist/login' element={<ArtistLogin />} />
       <Route path='/artist/register' element={<ArtistRegis />} />
 
@@ -158,6 +160,13 @@ export default function RouterConfig() {
         <Route path="/artist/albums" element={<AlbumManagement />} />
         <Route path="/artist/settings" element={<Settings />} />
       </Route>
+
+      <Route path='/history' element={
+          <RequireAdmin>
+            <History/>
+          </RequireAdmin>
+        }></Route>
+
     </Routes>
   )
 }
