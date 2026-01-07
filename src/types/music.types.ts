@@ -4,6 +4,7 @@ export interface Genre {
 }
 
 export interface Song {
+  cover_image: any;
   id: string; 
   title: string;
   duration: string;
